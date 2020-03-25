@@ -2,8 +2,8 @@ import lightgbm as lgb
 import numpy as np
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 import pandas as pd
-from scipy.stats import randint as sp_randint
-from scipy.stats import uniform as sp_uniform
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
 
 data = pd.read_csv('../BabayanEtAl_VirusData.csv', low_memory=False)
 
@@ -27,16 +27,24 @@ print(experiment_data.Reservoir.unique())
 print(experiment_data.shape)
 print(experiment_data[['Virus name', 'Reservoir']].head())
 
-train_set_frame = experiment_data.sample(frac=0.8, random_state=0)
-test_set_frame = experiment_data.drop(train_set_frame.index)
+data_array = experiment_data.iloc[:, 6:].to_numpy()
+label_array = experiment_data['Reservoir'].to_numpy()
 
-train_labels = train_set_frame['Reservoir'].to_numpy()
-test_labels = test_set_frame['Reservoir'].to_numpy()
+train_set, test_set, train_labels, test_labels = train_test_split(data_array, label_array, test_size=0.20, random_state=314, stratify=label_array)
 
-train_set = train_set_frame.iloc[:, 6:].to_numpy()
-test_set = test_set_frame.iloc[:, 6:].to_numpy()
+train_labels = preprocessing.label_binarize(train_labels, classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+test_labels = preprocessing.label_binarize(test_labels, classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-train_data = lgb.Dataset(train_set, label=train_labels)
+# train_set_frame = experiment_data.sample(frac=0.8, random_state=0)
+# test_set_frame = experiment_data.drop(train_set_frame.index)
+#
+# train_labels = train_set_frame['Reservoir'].to_numpy()
+# test_labels = test_set_frame['Reservoir'].to_numpy()
+#
+# train_set = train_set_frame.iloc[:, 6:].to_numpy()
+# test_set = test_set_frame.iloc[:, 6:].to_numpy()
+
+train_data = lgb.Dataset(train_set, label=preprocessing.label_binarize(train_labels, classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
 test_data = lgb.Dataset(test_set, label=test_labels)
 
 # params = {"objective": "multiclass",
@@ -69,12 +77,11 @@ param_test = {'num_leaves': [8, 16, 24, 32, 40, 48, 56, 64],
               'feature_fraction': [0.7, 0.8, 0.9, 0.95, 0.99],
               'bagging_freq': [3, 4, 5, 6, 7]}
 
-fit_params = {'early_stopping_rounds': 30,
-              'eval_metric': 'multi_logloss',
+fit_params = {'eval_metric': 'multi_logloss',
               'eval_set': [(test_set, test_labels)],
               'verbose': 100}
 
-clf = lgb.LGBMClassifier(max_depth=-1, random_state=314, objective='multiclass', num_class=11, silent=True, metric='None', n_jobs=4, n_estimators=5000)
+clf = lgb.LGBMClassifier(max_depth=-1, random_state=314, objective='multiclass_ova', num_class=11, silent=True, metric='None', n_jobs=4, n_estimators=5000)
 gs = RandomizedSearchCV(estimator=clf, param_distributions=param_test,
                         n_iter=500,
                         scoring='roc_auc',
