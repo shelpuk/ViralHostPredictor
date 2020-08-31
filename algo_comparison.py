@@ -42,9 +42,9 @@ seed = 4
 # Load datasets from disk #
 
 #%%
-df_reservoirs = pd.read_csv("<filename of the appropriate database>")
+df_reservoirs = pd.read_csv("BabayanEtAl_VirusData.csv", low_memory=False)
 
-df_h2o_reservoirs = h2o.import_file("<filename of the appropriate database>")
+df_h2o_reservoirs = h2o.import_file("BabayanEtAl_VirusData.csv")
 
 #%%
 # cross-validation settings
@@ -73,7 +73,7 @@ y = df_reservoirs.index
 ## for H2O models
 X_h2o = df_h2o_reservoirs.columns
 del X_h2o[0]
-y_h2o = "class"
+y_h2o = 'Reservoir'
 
 train, test = df_h2o_reservoirs.split_frame(ratios=[1-validation_size], seed=seed)
 
@@ -113,9 +113,9 @@ print(msg)
 
 # Load datasets from disk #
 #%%
-df_arth_borne = pd.read_csv("<filename of the appropriate database>")
+df_arth_borne = pd.read_csv("BabayanEtAl_VirusData.csv", low_memory=False)
 
-df_h2o_arth_borne = h2o.import_file("<filename of the appropriate database>")
+df_h2o_arth_borne = h2o.import_file("BabayanEtAl_VirusData.csv")
 
 
 # Run model comparison #
@@ -143,7 +143,7 @@ y = df_arth_borne.index
 
 ## for H2O models
 X_h2o = df_h2o_arth_borne.columns
-y_h2o = "class"
+y_h2o = 'Reservoir'
 X_h2o.remove(y_h2o)
 
 df_h2o_arth_borne[0] = df_h2o_arth_borne[0].asfactor()
@@ -186,9 +186,9 @@ print(msg)
 # Load datasets from disk #
 
 #%%
-df__vec_taxon = pd.read_csv("<filename of the appropriate database>")
+df__vec_taxon = pd.read_csv("BabayanEtAl_VirusData.csv", low_memory=False)
 
-df_h2o__vec_taxon = h2o.import_file("<filename of the appropriate database>")
+df_h2o__vec_taxon = h2o.import_file("BabayanEtAl_VirusData.csv")
 
 
 # Run model comparison #
@@ -220,7 +220,7 @@ y = df__vec_taxon.index
 ## for H2O models
 X_h2o = df_h2o__vec_taxon.columns
 del X_h2o[0]
-y_h2o = "class"
+y_h2o = 'Reservoir'
 
 train, test = df_h2o__vec_taxon.split_frame(ratios=[1-validation_size], seed=seed)
 

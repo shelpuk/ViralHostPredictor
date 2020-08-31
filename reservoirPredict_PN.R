@@ -1,13 +1,7 @@
-"""
-Babayan, Orton & Streicker
-
-Predicting Reservoir Hosts and Arthropod Vectors from Evolutionary Signatures in RNA Virus Genomes
-
--- Reservoir host prediction from selected genomic features and phylogenetic neighborhoods
-"""
+remoter::client("titan.dt")
 
 rm(list=ls())
-setwd("") # Set local working directory where files are located
+setwd("C:\\Users\\SergiiShelpuk\\PycharmProjects\\ViralHostPredictor") # Set local working directory where files are located
 
 library(plyr)
 library(h2o)

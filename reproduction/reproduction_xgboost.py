@@ -66,7 +66,7 @@ class XGBoostTuner:
                              min_child_weight=min_child_weight, missing=None, n_estimators=n_estimators, n_jobs=8,
                              nthread=8, objective='multi:softmax', random_state=0, reg_alpha=reg_alpha,
                              reg_lambda=1, scale_pos_weight=1, seed=self.seed, silent=None,
-                             subsample=subsample, verbosity=1, num_class=11)
+                             subsample=subsample, verbosity=1, num_class=11, tree_method='gpu_hist', gpu_id=1)
 
     def _run_grid_search(self, param_test, xgb_classifier, X_train, y_train):
         gsearch = GridSearchCV(estimator=xgb_classifier,
